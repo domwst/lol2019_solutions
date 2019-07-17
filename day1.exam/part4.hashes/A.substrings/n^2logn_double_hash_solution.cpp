@@ -43,32 +43,44 @@ signed main() {
 	run();
 }
 
-bool check_gcd(int a, int b, int c, int d) {
-	if (b == 0) {
-		return false;
-	}
-	if (mp(a, b) == mp(c, d)) {
-		return true;
-	}
-	if (a < b) {
-		return check_gcd(b - a, a, c, d);
-	}
-	if (b == d && a % b == c % d && c <= a) {
-		return true;
-	}
-	return check_gcd(a % b, b, c, d);
-}
+struct Hash {
+	vector<int> p, hash;
+	int P, m;
 
-void run() {
-	int n;
-	cin >> n;
-	for (int i = 0; i < n; ++i) {
-		int a, b, c, d;
-		cin >> a >> b >> c >> d;
-		if (check_gcd(a, b, c, d)) {
-			cout << "YES" << endl;
-		} else {
-			cout << "NO" << endl;
+	Hash(const string &s, int P, int m) : P(P), m(m) {
+		int n = len(s);
+		hash.resize(n + 1, 0);
+		p.resize(n + 1, 0);
+		p[0] = 1;
+		for (int i = 1; i <= n; ++i) {
+			p[i] = (p[i - 1] * P) % m;
+		}
+		for (int i = 0; i < n; ++i) {
+			hash[i + 1] = (hash[i] * P + (s[i] - 'a' + 1)) % m;
 		}
 	}
+
+	int get_hash(int l, int r) {
+		int h = (hash[r] - hash[l] * p[r - l]) % m;
+		if (h < 0) {
+			h += m;
+		}
+		return h;
+	}
+};
+
+void run() {
+	string s;
+	cin >> s;
+	int n = len(s);
+	Hash h1(s, 31, 1e9 + 7), h2(s, 37, 1e9 + 9);
+	vector<pii> hashes;
+	for (int i = 0; i < n; ++i) {
+		for (int j = i; j < n; ++j) {
+			hashes.pb({ h1.get_hash(i, j + 1), h2.get_hash(i, j + 1) });
+		}
+	}
+	sort(all(hashes));
+	hashes.resize(unique(all(hashes)) - hashes.begin());
+	cout << len(hashes) << endl;
 }

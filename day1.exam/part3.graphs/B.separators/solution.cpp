@@ -42,29 +42,6 @@ signed main() {
 	cout.tie(0);
 	run();
 }
-#include <bits/stdc++.h>
-
-using namespace std;
-
-typedef long long ll;
-typedef long double ld;
-
-#define int ll
-#define pb push_back
-#define kek pop_back
-#define mp make_pair
-#define pii pair<int, int>
-#define all(v) v.begin(), v.end()
-#define len(v) ((int)(v).size())
-
-void run();
-
-signed main() {
-	iostream::sync_with_stdio(0);
-	cin.tie(0);
-	cout.tie(0);
-	run();
-}
 
 vector<vector<pii>> g;
 vector<int> tin, fup;

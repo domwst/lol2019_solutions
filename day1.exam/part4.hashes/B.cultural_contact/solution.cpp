@@ -43,32 +43,38 @@ signed main() {
 	run();
 }
 
-bool check_gcd(int a, int b, int c, int d) {
-	if (b == 0) {
-		return false;
-	}
-	if (mp(a, b) == mp(c, d)) {
-		return true;
-	}
-	if (a < b) {
-		return check_gcd(b - a, a, c, d);
-	}
-	if (b == d && a % b == c % d && c <= a) {
-		return true;
-	}
-	return check_gcd(a % b, b, c, d);
-}
+const int p = 1234577, M = 1e9 + 7;
 
 void run() {
-	int n;
-	cin >> n;
+	string s;
+	cin >> s;
+	int n = len(s);
+	vector<int> pw(26, 1);
+	for (int i = 1; i < 26; ++i) {
+		pw[i] = (pw[i - 1] * p) % M;
+	}
+	vector<int> pref(n + 1, 0);
 	for (int i = 0; i < n; ++i) {
-		int a, b, c, d;
-		cin >> a >> b >> c >> d;
-		if (check_gcd(a, b, c, d)) {
-			cout << "YES" << endl;
-		} else {
-			cout << "NO" << endl;
+		pref[i + 1] = pref[i] + pw[s[i] - 'a'];
+		if (pref[i + 1] >= M) {
+			pref[i + 1] -= M;
+		}
+	}
+	for (int i = 1; i <= n; ++i) {
+		if (n % i) {
+			continue;
+		}
+		int h = pref[i];
+		bool good = true;
+		for (int j = i; j <= n; j += i) {
+			if ((pref[j] - pref[j - i] + M) % M != h) {
+				good = false;
+				break;
+			}
+		}
+		if (good) {
+			cout << n / i << endl;
+			return;
 		}
 	}
 }
